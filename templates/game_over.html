@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DND AI - Поражение</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card narrow">
+    <h1>Игра окончена</h1>
+    <p>HP персонажа закончились. Ты проиграл приключение.</p>
+    <form method="post" action="{{ url_for('restart') }}">
+      <button type="submit">Начать заново</button>
+    </form>
+    <form method="post" action="{{ url_for('exit_to_menu') }}" class="menu-exit-form">
+      <button type="submit" class="btn-secondary">В меню сохранений</button>
+    </form>
+  </main>
+</body>
+</html>

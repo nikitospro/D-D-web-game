@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DND AI - Игра</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="hud hp">HP: {{ state.character.hp }}</div>
+  <div class="hud inv">
+    <h3>Инвентарь</h3>
+    <ul>
+      {% for item in state.character.inventory %}
+        <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <main class="card">
+    <h1>Приключение</h1>
+    <form method="post" action="{{ url_for('exit_to_menu') }}" class="menu-exit-form">
+      <button type="submit" class="btn-secondary">Выход в меню сохранений</button>
+    </form>
+    <form method="post" action="{{ url_for('toggle_debug') }}" class="menu-exit-form">
+      <button type="submit" class="btn-secondary">
+        {% if state.debug_enabled %}Выключить DEBUG{% else %}Включить DEBUG{% endif %}
+      </button>
+    </form>
+    {% if state.current_scene_image_url %}
+      <div class="scene-image-wrap">
+        <img src="{{ state.current_scene_image_url }}" alt="Иллюстрация сцены" class="scene-image">
+      </div>
+    {% endif %}
+    <p class="scene">{{ state.current_scene.description }}</p>
+
+    {% if turn_result %}
+      <div class="turn">
+        <div><strong>Действие:</strong> {{ turn_result.action }}</div>
+        <div><strong>Бросок d20:</strong> {{ turn_result.roll }} (нужно {{ turn_result.dc }})</div>
+        <div><strong>Результат:</strong> {% if turn_result.success %}Успех{% else %}Провал{% endif %}</div>
+        <div><strong>Изменение HP:</strong> {{ turn_result.hp_change }}</div>
+      </div>
+    {% endif %}
+
+    {% if state.debug_enabled %}
+      <section class="debug-panel">
+        <h3>DEBUG LOG</h3>
+        <div class="debug-list">
+          {% if state.debug_logs %}
+            {% for log in state.debug_logs[-70:] %}
+              <div class="debug-line debug-{{ log.level }}">
+                <span class="debug-ts">[{{ log.ts }}]</span>
+                <span class="debug-level">{{ log.level|upper }}</span>
+                <span>{{ log.message }}</span>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="debug-line debug-system">Логи пока пустые.</div>
+          {% endif %}
+        </div>
+      </section>
+    {% endif %}
+
+    <form method="post" class="form">
+      <div class="choices">
+        {% for opt in state.current_scene.options %}
+          <label class="choice">
+            <input type="radio" name="action" value="{{ opt }}">
+            {{ opt }}
+          </label>
+        {% endfor %}
+      </div>
+      <label>Свой вариант действия
+        <textarea name="custom_action" rows="3" placeholder="Напиши собственное действие"></textarea>
+      </label>
+      <button type="submit">Сделать ход</button>
+    </form>
+  </main>
+</body>
+</html>

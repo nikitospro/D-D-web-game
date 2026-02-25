@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DND AI - Создание персонажа</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card">
+    <h1>Создание персонажа</h1>
+    <p class="muted">Заполни параметры героя и выбери 3 предмета из набора, который сгенерировала нейросеть.</p>
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+    <form method="post" class="form grid-2">
+      <label>Имя
+        <input type="text" name="name" required>
+      </label>
+      <label>Раса
+        <input type="text" name="race" required>
+      </label>
+      <label>Класс
+        <input type="text" name="character_class" required>
+      </label>
+      <label>Возраст
+        <input type="text" name="age" required>
+      </label>
+      <label class="full">Внешность
+        <textarea name="appearance" rows="3" required></textarea>
+      </label>
+      <fieldset class="full">
+        <legend>Пол</legend>
+        <div class="row">
+          <label><input type="radio" name="gender" value="Мужской" required> Мужской</label>
+          <label><input type="radio" name="gender" value="Женский" required> Женский</label>
+          <label><input type="radio" name="gender" value="Другой" required> Другой</label>
+        </div>
+      </fieldset>
+      <fieldset class="full">
+        <legend>Сгенерированные предметы (выбери 3)</legend>
+        <div class="row">
+          <button type="submit" name="refresh_items" value="1" formnovalidate class="btn-secondary">Перегенерировать предметы</button>
+        </div>
+        <div class="items">
+          {% for item in starter_items %}
+            <label><input type="checkbox" name="items" value="{{ item }}"> {{ item }}</label>
+          {% endfor %}
+        </div>
+      </fieldset>
+      <div class="full">
+        <button type="submit">Начать приключение</button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

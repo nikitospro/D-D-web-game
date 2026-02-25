@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DND AI - Новое сохранение</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card narrow">
+    <h1>Сохранения</h1>
+    <p class="muted">Загрузи существующее сохранение или создай новое.</p>
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <section class="save-list-wrap">
+      <h2>Загрузить сохранение</h2>
+      {% if saves %}
+        <div class="save-list">
+          {% for save in saves %}
+            <div class="save-item">
+              <div class="save-main">
+                <strong>{{ save.save_name }}</strong>
+                <span class="muted">Герой: {{ save.character_name }} | HP: {{ save.hp }}</span>
+                <span class="muted">Обновлено: {{ save.updated_at }}</span>
+              </div>
+              <div class="save-actions">
+                <form method="post" action="{{ url_for('load_save') }}">
+                  <input type="hidden" name="save_name" value="{{ save.save_name }}">
+                  <button type="submit">Загрузить</button>
+                </form>
+                <form method="post" action="{{ url_for('delete_save') }}">
+                  <input type="hidden" name="save_name" value="{{ save.save_name }}">
+                  <button type="submit" class="btn-danger">Удалить</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="muted">Пока нет сохранений.</p>
+      {% endif %}
+    </section>
+
+    <hr class="sep">
+
+    <h2>Создать новое сохранение</h2>
+    <form method="post" class="form">
+      <label>Название сохранения
+        <input type="text" name="save_name" required>
+      </label>
+      <label>Сценарий мира
+        <textarea name="world_scenario" rows="4" required placeholder="Опиши мир, атмосферу, важные детали"></textarea>
+      </label>
+      <label>Главная цель
+        <textarea name="main_goal" rows="3" required placeholder="Что персонаж должен достичь?"></textarea>
+      </label>
+      <button type="submit">Продолжить</button>
+    </form>
+  </main>
+</body>
+</html>
